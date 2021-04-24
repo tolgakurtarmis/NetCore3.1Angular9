@@ -23,6 +23,7 @@ namespace NetCoreBusinessEngine.Implementaion
         {
             try
             {
+
                 if (orderId <= 0)
                     return new Result<bool>(false, $"id => {orderId} Id değeri 0 dan büyük olmalıdır.");
 
