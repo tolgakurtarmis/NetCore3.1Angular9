@@ -11,7 +11,10 @@ using NetCoreData.DataContracts;
 using NetCoreData.DataContext;
 using NetCoreData.DbModels;
 using NetCoreData.Implementaion;
- 
+using NetCore3._1Angular9.Helper;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 namespace NetCore3._1Angular9
 {
@@ -29,7 +32,7 @@ namespace NetCore3._1Angular9
         {
             services.AddControllers();
             services.AddScoped<IUnitOfWorks, UnitOfWorks>();
-            services.AddScoped<IItemBusinessEngine,ItemBusinessEngine>();
+            services.AddScoped<IItemBusinessEngine, ItemBusinessEngine>();
             services.AddScoped<ICustomerBusinessEngine, CustomerBusinessEngine>();
             services.AddScoped<IOrderBusinessEngine, OrderBusinessEngine>();
 
@@ -43,6 +46,30 @@ namespace NetCore3._1Angular9
             services.AddCors();
 
             var appSettingsSection = Configuration.GetSection("AppSettings");
+            services.Configure<AppSettings>(appSettingsSection);
+
+            // JWT Authentication
+            var appSettings = appSettingsSection.Get<AppSettings>();
+            var key = Encoding.ASCII.GetBytes(appSettings.Key);
+
+            services.AddAuthentication(au =>
+            {
+
+                au.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                au.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            }).AddJwtBearer(jwt =>
+            {
+                jwt.RequireHttpsMetadata = false;
+                jwt.SaveToken = true;
+                jwt.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,7 +100,7 @@ namespace NetCore3._1Angular9
             {
                 endpoints.MapControllers();
             });
-             
+
         }
     }
 }
