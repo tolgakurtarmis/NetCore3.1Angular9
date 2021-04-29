@@ -17,7 +17,7 @@ using NetCoreData.DbModels;
 
 namespace NetCore3._1Angular9.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[auth]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -38,6 +38,73 @@ namespace NetCore3._1Angular9.Controllers
             _hasher = hasher;
             _config = config;
             _signInManager = signInManager;
+        }
+
+
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] CredentialmodelDto model)
+        {
+            try
+            {
+                var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, false, false);
+                if (result.Succeeded)
+                {
+                    var user = await _userManager.FindByNameAsync(model.UserName);
+                    if (user != null)
+                    {
+                        var tokenPacket = CreateToken(user);
+                        if (tokenPacket != null && tokenPacket.Result.Token != null)
+                        {
+                            return Ok(tokenPacket);
+                        }
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Loggin yapılırken hata oluştu: {ex}");
+
+            }
+            return BadRequest("Loggin başarılı olamadı lütfen bilgilerinizi kontrol ediniz.");
+        }
+
+        public async Task<IActionResult> Register([FromBody] RegisterModelDto model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest("Parametre Hatalı");
+
+            try
+            {
+                var user = await _userManager.FindByNameAsync(model.UserName);
+                if (user != null)
+                    return BadRequest("Bu kullanıcı zaten var ");
+                else
+                {
+                    user = new ApplicationUser
+                    {
+                        FirstName = model.FirstName,
+                        LastName = model.LastName,
+                        Email = model.Email,
+                        UserName = model.UserName
+                    };
+
+                    var result = await _userManager.CreateAsync(user, model.Password);
+                    if (result.Succeeded)
+                        return Ok(CreateToken(user));
+                    else
+                        return BadRequest(result.Errors);
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Kayıt Esnasında Exception Hatası Alındı {ex}");
+                return BadRequest($"Yeni kullanıcı kaydı sırasında hata alındı : {ex}");
+            }
+
         }
 
         [HttpPost("Token")]

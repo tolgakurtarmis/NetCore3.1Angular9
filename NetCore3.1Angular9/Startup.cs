@@ -41,6 +41,8 @@ namespace NetCore3._1Angular9
 
             services.AddScoped<IApplicationUserBusinessEngine, ApplicationUserBusinessEngine>();
             services.AddCors();
+
+            var appSettingsSection = Configuration.GetSection("AppSettings");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
