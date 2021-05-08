@@ -33,7 +33,7 @@ namespace NetCore3._1Angular9
             services.AddControllers();
             services.AddScoped<IUnitOfWorks, UnitOfWorks>();
             services.AddScoped<IItemBusinessEngine, ItemBusinessEngine>();
-            services.AddScoped<ICustomerBusinessEngine, CustomerBusinessEngine>();
+            services.AddScoped<ICustomerBusinessEngine, CustomerBusinessEngine>();  
             services.AddScoped<IOrderBusinessEngine, OrderBusinessEngine>();
 
             services.AddDbContext<NetCoreDbContext>(
@@ -45,7 +45,7 @@ namespace NetCore3._1Angular9
             services.AddScoped<IApplicationUserBusinessEngine, ApplicationUserBusinessEngine>();
             services.AddCors();
 
-            var appSettingsSection = Configuration.GetSection("AppSettings");
+            var appSettingsSection = Configuration.GetSection("Token");
             services.Configure<AppSettings>(appSettingsSection);
 
             // JWT Authentication

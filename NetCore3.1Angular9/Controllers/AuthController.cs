@@ -17,7 +17,7 @@ using NetCoreData.DbModels;
 
 namespace NetCore3._1Angular9.Controllers
 {
-    [Route("api/[auth]")]
+    [Route("api/auth")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -43,7 +43,7 @@ namespace NetCore3._1Angular9.Controllers
 
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] CredentialmodelDto model)
+        public async Task<IActionResult> Login([FromBody] CredentialModelDto model)
         {
             try
             {
@@ -108,7 +108,7 @@ namespace NetCore3._1Angular9.Controllers
         }
 
         [HttpPost("Token")]
-        public async Task<IActionResult> CreateToken([FromBody] CredentialmodelDto model)
+        public async Task<IActionResult> CreateToken([FromBody] CredentialModelDto model)
         {
             try
             {

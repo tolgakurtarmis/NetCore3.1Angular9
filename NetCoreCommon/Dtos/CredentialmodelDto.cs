@@ -4,7 +4,7 @@ using System.Text;
 
 namespace NetCoreCommon.Dtos
 {
-   public class CredentialmodelDto
+   public class CredentialModelDto
     {
         public string UserName { get; set; }
 
